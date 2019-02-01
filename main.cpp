@@ -127,7 +127,7 @@ int main() {
     // call execute on that command
 
     // game loop
-    while (true) {
+    while (!victory()) {
         string command;
         getline(cin, command);
 
@@ -138,6 +138,10 @@ int main() {
 
         cout << "Your command was: " << command << endl;
     }
+}
+
+bool victory() {
+    return false;
 }
 
 
