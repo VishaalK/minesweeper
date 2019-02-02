@@ -23,6 +23,8 @@ struct State {
     vector<vector<Tile>> grid;
 };
 
+bool victory();
+
 string tileRepresentation(const Tile& tile) {
     return tile.containsMine ? "*" : " ";
 }
@@ -137,6 +139,7 @@ int main() {
         }
 
         cout << "Your command was: " << command << endl;
+        cout << printGrid(grid).str() << endl;
     }
 }
 
