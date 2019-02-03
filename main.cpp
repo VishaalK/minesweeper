@@ -16,6 +16,7 @@ struct Tile {
 struct TileState {
     bool clicked;
     int value;
+    TileState(): clicked(false), value(-1) {}
     TileState(bool _clicked, int _value): clicked(_clicked), value(_value) {}
 };
 
@@ -37,18 +38,34 @@ string tileRepresentation(const TileState& tileState) {
     return to_string(tileState.value);
 }
 
+template<typename T>
+string join(const vector<T> v, char delim) {
+    ostringstream ret;
+    for (int i = 0; i < v.size(); i++) {
+        ret << v[i];
+        if (i != v.size() - 1) {
+            ret << delim;
+        }
+    }
+    return ret.str();
+}
+
+
 ostringstream printGrid(const vector<vector<Tile>>& grid) {
     ostringstream ret;
     for (auto row : grid) {
-        for (auto tile : row) {
-            ret << tileRepresentation(tile);
-        }
+        vector<string> tileRepresentations;
+        // tileRepresentations.resize(row.size());
+        transform(begin(row), end(row), back_inserter(tileRepresentations), [](Tile t) {
+            return tileRepresentation(t);
+        });
+        ret << join(tileRepresentations, '|');
         ret << "\n";
     }
     return ret;
 }
 
-ostringstream printGridState(const vector<vector<TileState>>& gridState) {
+string printGridState(const vector<vector<TileState>>& gridState) {
     ostringstream a;
     for (auto row : gridState) {
         for (auto tileState : row) {
@@ -56,7 +73,7 @@ ostringstream printGridState(const vector<vector<TileState>>& gridState) {
         }
         a << "\n";
     }
-    return a;
+    return a.str();
 }
 
 struct Coordinate {
@@ -64,6 +81,10 @@ struct Coordinate {
     int y;
     Coordinate(int _x, int _y): x(_x), y(_y) {}
 };
+
+vector<vector<TileState>> constructDefaultGridState(const int size) {
+    return vector<vector<TileState>>(size, vector<TileState>(size));
+}
 
 vector<vector<Tile>> constructGrid(const int size, vector<Coordinate> mineLocations) {
     vector<vector<Tile>> ret(size, vector<Tile>(size));
@@ -112,6 +133,8 @@ int main() {
         {0, 4}
     });
 
+    auto gridState = constructDefaultGridState(5);
+
     auto repr = printGrid(grid);
     cout << repr.str() << endl;
 
@@ -139,7 +162,7 @@ int main() {
         }
 
         cout << "Your command was: " << command << endl;
-        cout << printGrid(grid).str() << endl;
+        cout << printGridState(gridState) << endl;
     }
 }
 
