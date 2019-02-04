@@ -7,6 +7,15 @@ using namespace std;
 
 const string filledInSquare("\u25A0");
 
+struct Event {
+    const string label;
+};
+
+void dispatch(Event event) {
+
+}
+
+
 struct Tile {
     bool containsMine; 
     Tile(): containsMine(false) {}
@@ -153,8 +162,11 @@ int main() {
 
     // game loop
     while (!victory()) {
-        string command;
-        getline(cin, command);
+        string command("sup");
+        // getline(cin, command);
+
+        int x; int y;
+        cin >> x >> y;
 
         if (command == "exit") {
             cout << filledInSquare << endl;
@@ -163,6 +175,11 @@ int main() {
 
         cout << "Your command was: " << command << endl;
         cout << printGridState(gridState) << endl;
+
+
+        try {
+            clickLocation(Coordinate())
+        }
     }
 }
 
@@ -170,6 +187,22 @@ bool victory() {
     return false;
 }
 
+void clickLocation(Coordinate c, const vector<vector<Tile>>& grid, vector<vector<TileState>>& gridState) {
+    auto x = c.x;
+    auto y = c.y;
+    if (gridState[x][y].clicked) {
+        throw "Tile was already clicked";
+    }
+
+    // flood fill all the tiles around it
+    if (grid[x][y].containsMine) {
+        // end the game
+    }
+}
+
+void test_clickLocation() {
+    // grid
+}
 
 
 // we also have a game loop that takes state and event, and given the event, does the approprait ething to the sate
