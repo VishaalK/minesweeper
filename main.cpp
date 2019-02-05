@@ -15,6 +15,11 @@ void dispatch(Event event) {
 
 }
 
+struct Coordinate {
+    int x;
+    int y;
+    Coordinate(int _x, int _y): x(_x), y(_y) {}
+};
 
 struct Tile {
     bool containsMine; 
@@ -44,7 +49,8 @@ string tileRepresentation(const TileState& tileState) {
         return filledInSquare;
     }
 
-    return to_string(tileState.value);
+    auto ret = tileState.value != 0 ? to_string(tileState.value) : " ";
+    return ret;
 }
 
 template<typename T>
@@ -59,6 +65,8 @@ string join(const vector<T> v, char delim) {
     return ret.str();
 }
 
+
+void clickLocation(Coordinate c, const vector<vector<Tile>>& grid, vector<vector<TileState>>& gridState);
 
 ostringstream printGrid(const vector<vector<Tile>>& grid) {
     ostringstream ret;
@@ -77,19 +85,20 @@ ostringstream printGrid(const vector<vector<Tile>>& grid) {
 string printGridState(const vector<vector<TileState>>& gridState) {
     ostringstream a;
     for (auto row : gridState) {
-        for (auto tileState : row) {
-            a << tileRepresentation(tileState);
-        }
+        vector<string> tileRepresentations;
+        // tileRepresentations.resize(row.size());
+        transform(begin(row), end(row), back_inserter(tileRepresentations), [](TileState t) {
+            return tileRepresentation(t);
+        });
+
+        a << join(tileRepresentations, '|');
         a << "\n";
+        // a << join(vector<string>(row.size(), "_"), ' ') << "\n";
     }
     return a.str();
 }
 
-struct Coordinate {
-    int x;
-    int y;
-    Coordinate(int _x, int _y): x(_x), y(_y) {}
-};
+
 
 vector<vector<TileState>> constructDefaultGridState(const int size) {
     return vector<vector<TileState>>(size, vector<TileState>(size));
@@ -173,18 +182,30 @@ int main() {
             return 0;
         }
 
-        cout << "Your command was: " << command << endl;
-        cout << printGridState(gridState) << endl;
-
-
         try {
-            clickLocation(Coordinate())
+            clickLocation(Coordinate(x, y), grid, gridState);
+        } catch (exception e) {
+            cout << e.what() << endl;
+            continue;
         }
+
+        cout << "Your command was: " << x << ", " << y << endl;
+        cout << printGridState(gridState) << endl;
     }
 }
 
 bool victory() {
     return false;
+}
+
+int getValueFromSurroundingSquares(Coordinate c, const vector<vector<Tile>>& grid) {
+    // int x = c.x;
+    // int y = c.y;
+
+    // iterate in a circle around this spot
+    // for (int i = 0; i )
+    return 5;
+    // recurse more or less on the surrounding spots
 }
 
 void clickLocation(Coordinate c, const vector<vector<Tile>>& grid, vector<vector<TileState>>& gridState) {
@@ -196,9 +217,16 @@ void clickLocation(Coordinate c, const vector<vector<Tile>>& grid, vector<vector
 
     // flood fill all the tiles around it
     if (grid[x][y].containsMine) {
+        cout << "You lost!" << endl;
+        exit(1);
         // end the game
     }
+
+    gridState[x][y].clicked = true;
+    gridState[x][y].value = getValueFromSurroundingSquares(c, grid);
 }
+
+
 
 void test_clickLocation() {
     // grid
