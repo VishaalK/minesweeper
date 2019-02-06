@@ -194,7 +194,12 @@ int main() {
         try {
             clickLocation(Coordinate(x, y), grid, gridState);
         } catch (exception e) {
+            cout << "yo" << endl;
             cout << e.what() << endl;
+            continue;
+        } catch (...) {
+            cout << e.what() << endl;
+            cout << "The rest" << endl;
             continue;
         }
 
@@ -241,19 +246,17 @@ vector<Coordinate> getNeighbors(Coordinate c, int gridSize) {
 }
 
 int getValueFromSurroundingSquares(Coordinate c, const vector<vector<Tile>>& grid) {
-    // int x = c.x;
-    // int y = c.y;
-
-    // iterate in a circle around this spot
-    // for (int i = 0; i )
-    return 5;
-    // recurse more or less on the surrounding spots
+    auto neighbors = getNeighbors(c, grid.size());
+    int sum = 0;
+    for (const auto& v: neighbors)  if (grid[v.x][v.y].containsMine) sum += 1;
+    return sum;
 }
 
 void clickLocation(Coordinate c, const vector<vector<Tile>>& grid, vector<vector<TileState>>& gridState) {
     auto x = c.x;
     auto y = c.y;
     if (gridState[x][y].clicked) {
+        cout << "Tile was already clicked" << endl;
         throw "Tile was already clicked";
     }
 
