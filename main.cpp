@@ -40,6 +40,8 @@ struct State {
 
 bool victory();
 
+vector<Coordinate> getNeighbors(Coordinate c, int gridSize);
+
 string tileRepresentation(const Tile& tile) {
     return tile.containsMine ? "*" : " ";
 }
@@ -143,6 +145,7 @@ void compileTest(GameState& gs) {
     cout << "bruh" << endl;
 };
 
+
 int main() {
     auto grid = constructGrid(5, {
         {0, 0},
@@ -155,6 +158,12 @@ int main() {
 
     auto repr = printGrid(grid);
     cout << repr.str() << endl;
+
+    auto neighbors = getNeighbors(Coordinate(2,2), grid.size());
+    for (auto neighbor : neighbors) {
+        cout << "(" << neighbor.x << ", " << neighbor.y << ")" << " ";
+    }
+    cout << endl;
 
     unordered_map<string, std::function<void(GameState&)>> commandMap;
     commandMap["select"] = compileTest;
@@ -196,6 +205,39 @@ int main() {
 
 bool victory() {
     return false;
+}
+
+bool inBounds(Coordinate c, int gridSize) {
+    bool xInBounds = c.x >= 0 && c.x < gridSize;
+    bool yInBounds = c.y >= 0 && c.y < gridSize;
+
+    return xInBounds && yInBounds;
+}
+
+vector<Coordinate> getNeighbors(Coordinate c, int gridSize) {
+    // go in a circle around the middling square
+    // start at top row 
+    vector<Coordinate> ret;
+    for (int i = 0; i < 2; i++) {
+        Coordinate topLeft(c.x - 1, c.y - 1);
+        Coordinate bottomLeft(c.x + 1, c.y - 1);
+        Coordinate topRight(c.x - 1, c.y + 1);
+        Coordinate bottomRight(c.x +1, c.y + 1);
+
+        topLeft.y += i;
+        topRight.x += i;
+        bottomRight.y -= i;
+        bottomLeft.x -= i;
+
+        vector<Coordinate> all{topLeft, bottomLeft, topRight, bottomRight};
+        for (auto coord : all) {
+            if (inBounds(coord, gridSize)) {
+                ret.push_back(coord);
+            }
+        }
+    }
+
+    return ret;
 }
 
 int getValueFromSurroundingSquares(Coordinate c, const vector<vector<Tile>>& grid) {
