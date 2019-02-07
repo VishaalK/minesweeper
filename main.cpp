@@ -198,7 +198,7 @@ int main() {
             cout << e.what() << endl;
             continue;
         } catch (...) {
-            cout << e.what() << endl;
+            // cout << e.what() << endl;
             cout << "The rest" << endl;
             continue;
         }
@@ -269,6 +269,17 @@ void clickLocation(Coordinate c, const vector<vector<Tile>>& grid, vector<vector
 
     gridState[x][y].clicked = true;
     gridState[x][y].value = getValueFromSurroundingSquares(c, grid);
+
+    if (gridState[x][y].value == 0) {
+        auto neighbors = getNeighbors(c, grid.size());
+        for (const auto& neighbor : neighbors) {
+            try {
+                clickLocation(Coordinate(neighbor.x, neighbor.y), grid, gridState);
+            } catch (...) {
+                
+            }
+        }
+    }
 }
 
 
