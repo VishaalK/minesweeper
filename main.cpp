@@ -256,7 +256,7 @@ void clickLocation(Coordinate c, const vector<vector<Tile>>& grid, vector<vector
     auto x = c.x;
     auto y = c.y;
     if (gridState[x][y].clicked) {
-        cout << "Tile was already clicked" << endl;
+        // cout << "Tile was already clicked" << endl;
         throw "Tile was already clicked";
     }
 
