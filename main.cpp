@@ -95,7 +95,6 @@ string printGridState(const vector<vector<TileState>>& gridState) {
 
         a << join(tileRepresentations, '|');
         a << "\n";
-        // a << join(vector<string>(row.size(), "_"), ' ') << "\n";
     }
     return a.str();
 }
@@ -186,6 +185,8 @@ int main() {
         int x; int y;
         cin >> x >> y;
 
+        cout << x << " , " << y << endl;
+
         if (command == "exit") {
             cout << filledInSquare << endl;
             return 0;
@@ -253,6 +254,10 @@ int getValueFromSurroundingSquares(Coordinate c, const vector<vector<Tile>>& gri
 }
 
 void clickLocation(Coordinate c, const vector<vector<Tile>>& grid, vector<vector<TileState>>& gridState) {
+    if (!inBounds(c, grid.size())) {
+        throw "Not valid move";
+    }
+
     auto x = c.x;
     auto y = c.y;
     if (gridState[x][y].clicked) {
@@ -281,13 +286,6 @@ void clickLocation(Coordinate c, const vector<vector<Tile>>& grid, vector<vector
         }
     }
 }
-
-
-
-void test_clickLocation() {
-    // grid
-}
-
 
 // we also have a game loop that takes state and event, and given the event, does the approprait ething to the sate
 // function(state& state) // seems low key fluxxed up but maybe it'll work, makes it mutable only in the reducer?
